@@ -1,9 +1,11 @@
 const express = require("express");
 const path = require('path');
-const app = express();
-const notes = require('./db/db.json');
+
+const api = require('./routes/index.js');
 
 const PORT = process.env.PORT || 3001;
+
+const app = express();
 
 //Middleware for parsing JSON and urlencoded form data 
 app.use(express.json());
@@ -12,22 +14,18 @@ app.use('/api', api);
 
 app.use(express.static('public'));
 
-//Get Route for retrieving notes
+//Get Route for notes page
 app.get('/notes', (req, res) => {
 
     res.sendFile(path.join(__dirname, 'public/notes.html' ))
 
 });
 
-//get route for retri
-app.get('api/routes', (req, res) => {
-
-})
-
 //wildcard route 
 app.get('*', (req, res) => {
     
     res.sendFile(path.join(__dirname, 'public/index.html'))
+
 });
 
 app.listen( PORT, () => {
