@@ -1,29 +1,20 @@
-const notes = require('express').Router();
-const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
+
+const router = require('express').Router();
+const { notes } = require('../db/db.json');
+const { createNote, deleteNote } = require('../helpers/fsUtils');
+const { v4:uuidv4 } = require('uuid');
 
 
 //get route for retrieving notes 
-notes.get('/', (req, res) => {
-    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
+router.get('/notes', (req, res) => {
+    let saved = notes;
+    res.json(saved);
 });
 
 //post route for new note 
-notes.post('/', (req, res) => {
-    console.log(req.body);
-
-    const { title, text } = req.body;
-
-    if (req.body) {
-        const newNote = {
-            title,
-            text,
-        };
-
-        readAndAppend(newNote, '.db/db.json');
-        res.json('Note added successfully');
-    }else {
-        res.errored('Error in adding note.');
-    }
+router.post('/notes', (req, res) => {
+    req.body.id = uuidv4();
+    res.json(createNote(req.body, notes));
 })
 
-module.exports = notes;
+module.exports = router;
